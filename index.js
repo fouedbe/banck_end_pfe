@@ -35,7 +35,7 @@ app.use("/api/compte", require("./routers/compte"));
 app.use("/api/auth", require("./routers/auth"));
 app.use("/api/users",require("./routers/users"));
 app.use("/api/getImage",require("./routers/image"));
-
+app.use('/api/transaction',require("./routers/transaction"));
 
 
 //Error Handler Middleware

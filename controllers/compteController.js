@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const {Compte,validateCompte,validateUpdateDemande}=require("../models/Compte")
+const {Transaction}=require("../models/transaction");
 const multer =require("multer");
 const path= require("path");
 /**
@@ -78,7 +79,7 @@ const getCompteById= asyncHandler(async(req,res)=>{
     
 })
 
-const depotCompte =asyncHandler(async(req, res) => {
+const retraitCompte =asyncHandler(async(req, res) => {
    
    
     
@@ -90,6 +91,13 @@ const depotCompte =asyncHandler(async(req, res) => {
         compte.solde=compte.solde-amount;
         updated = await Compte.findByIdAndUpdate({ _id: id }, compte);
         res.status(200).send(updated);
+        const transaction = new Transaction({
+            compte: compte._id,
+            type: 'retrait',
+            montant: amount,
+            solde: compte.solde
+          });
+          await transaction.save();
        }else{
         console.log("solde inssf");
        }
@@ -110,7 +118,13 @@ const ajoutCompte =asyncHandler(async(req, res) => {
            compte.solde=compte.solde+ parseFloat(amount);
            updated = await Compte.findByIdAndUpdate({ _id: id }, compte);
            res.status(200).send(updated);
-         
+           const transaction = new Transaction({
+            compte: compte._id,
+            type: 'dépôt',
+            montant: amount,
+            solde: compte.solde
+          });
+          await transaction.save();
            
        } catch (err) {
            res.status(400).send(err)
@@ -144,4 +158,4 @@ const deleteCompte=asyncHandler(async(req,res)=>{
     }
     
 })
-    module.exports={AddCompte,updateCompte,getCompteById,gettAllCompte,ajoutCompte,depotCompte,deleteCompte}
+    module.exports={AddCompte,updateCompte,getCompteById,gettAllCompte,ajoutCompte,retraitCompte,deleteCompte}

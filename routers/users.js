@@ -23,7 +23,7 @@ router.put("/:id",updateUser );
      * @method GET
      * @access private(only admin)
      */
-router.get("/",passport.authenticate('jwt', { session: false }),roles,gettAllUsers);
+router.get("/",gettAllUsers);
 router.put("/ajout/:num_compte",ajoutCompte );
 router.put("/depot/:num_compte",depotCompte );
 router.post("/confirm_user",confirmation );

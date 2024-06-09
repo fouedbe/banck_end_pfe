@@ -15,7 +15,7 @@ const demande_schema = new mongoose.Schema({
         required: true
     },
     prix:{
-        type: String,
+        type: Number,
         
     },
 
@@ -32,7 +32,7 @@ const demande_schema = new mongoose.Schema({
         
     },
     quantity: {
-        type: String,
+        type: Number,
         
     },
 }, { timestamps: true })

@@ -3,7 +3,7 @@ const router = require('express').Router();
 const asyncHandler = require("express-async-handler");
 const { Compte, validateUpdateDemande } = require("../models/Compte");
 const { verifyToken,verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("../middlewares/verifyToken");
-const{AddCompte,updateCompte,depotCompte,ajoutCompte,getCompteById,gettAllCompte,deleteCompte}= require("../controllers/compteController");
+const{AddCompte,updateCompte,retraitCompte,ajoutCompte,getCompteById,gettAllCompte,deleteCompte}= require("../controllers/compteController");
 const multer =require("multer");
 const { ROLES, inRole } = require("../middlewares/roles");
 const path= require("path");
@@ -50,8 +50,8 @@ router.put("/update/:id",updateCompte );
      * @access private(only admin)
      */
 router.get("/all",gettAllCompte );
-router.put("/ajout/:id",ajoutCompte );
-router.put("/depot/:id",depotCompte );
+router.put("/depot/:id",ajoutCompte );
+router.put("/retrait/:id",retraitCompte );
  /**
      * @desc Get  Enonce By Id
      * @route /api/users/:id

@@ -85,7 +85,7 @@ router.post("/login", asyncHandler(async(req, res) => {
     
     var token = jwt.sign({ 
       id: user._id,
-      name: user.name,
+      name: user.username,
       email: user.email,
       role: user.role
      }, process.env.JWT_SECRET_KEY,  { expiresIn: '1h' });

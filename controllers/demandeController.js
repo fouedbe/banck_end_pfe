@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
-const {Demande,validateDemande,validateUpdateDemande}=require("../models/demande")
+const {Demande,validateDemande,validateUpdateDemande}=require("../models/demande");
+const {Compte}=require("../models/Compte");
+const { User } = require("../models/User");
 const multer =require("multer");
 const path= require("path");
 /**
@@ -44,19 +46,36 @@ const gettAllDemande= asyncHandler(async(req,res)=>{
 
 const updateDemande =asyncHandler(async(req, res) => {
    
-    /*if (req.user.id !== req.params.id) {
-        return res.status(403).json({ message: 'you are not allow you ken update your profile' })
-    }*/
-
-   /* const { error } = validateUpdateAnnonce(req.body);
-    if (error) {
-        return res.status(400).json({ message: error.details[0].message });
-    }*/
+    
     
     try {
-        id = req.params.id;
-        newData = req.body;
-        updated = await Demande.findByIdAndUpdate({ _id: id }, newData);
+        const id = req.params.id;
+        const newData = req.body;
+        const updated = await Demande.findById({ _id: id });
+      
+        if (!updated) {
+          return res.status(404).send('Demande non trouvée');
+        }
+      
+        Object.assign(updated, newData);
+        await updated.save();
+        if(updated.prix !=0){
+            const userAccount = await User.findOne({ email: updated.emailuser });
+            if (!userAccount) {
+                return res.status(404).send('Compte non trouvé');
+              }
+            const usercompte = await Compte.findOne({ id_user: userAccount._id  });
+            if (!usercompte) {
+                return res.status(404).send('Compte bancaire non trouvé');
+              }
+              const totalAmount = updated.prix * updated.quantity;
+              if (usercompte.solde < totalAmount) {
+                return res.status(400).send('Solde insuffisant');
+              }
+              usercompte.solde -= totalAmount;
+           await usercompte.save()
+
+        }
         res.status(200).send(updated);
     } catch (err) {
         res.status(400).send(err)
@@ -88,16 +107,7 @@ const getDemandeById= asyncHandler(async(req,res)=>{
      * @method DELETE
      * @access private(only admin )
      */
- /*const deleteHotel=asyncHandler(async(req,res)=>{
-    const annonce= await User.findById(req.params.id);
-    if(annonce){
-        await Annonce.findByIdAndDelete(req.params.id)
-        res.status(200).json({message:"annonce has been deleted successfully"});
-    }else {
-        res.status(404).json({message:"annonce not found"})
-    }
-    
-})*/
+
 const deleteDemande=asyncHandler(async(req,res)=>{
     const annonce= await Demande.findById(req.params.id);
     if(annonce){
