@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { User, validateUpdateUser } = require("../models/User");
-const {Compte}=require("../models/Compte")
+const {Compte}=require("../models/Compte");
+const {Transaction}=require("../models/transaction");
 const bcrypt = require('bcrypt');
 const nodemailer = require("./nodemailer");
 const jwt = require("jsonwebtoken");
@@ -96,7 +97,13 @@ const depotCompte =asyncHandler(async(req, res) => {
           }else{
            console.log("solde inssf");
           }
-           
+          const transaction = new Transaction({
+            compte: compte._id,
+            type: 'retrait',
+            montant: amount,
+            solde: compte.solde
+          });
+          await transaction.save();
        } catch (err) {
            res.status(400).send(err)
        }
@@ -114,7 +121,13 @@ const depotCompte =asyncHandler(async(req, res) => {
               compte.solde=compte.solde+ parseFloat(amount);
               updated = await Compte.findByIdAndUpdate({ _id: id }, compte);
               res.status(200).send(updated);
-            
+              const transaction = new Transaction({
+                compte: compte._id,
+                type: 'dépôt',
+                montant: amount,
+                solde: compte.solde
+              });
+              await transaction.save();
               
           } catch (err) {
               res.status(400).send(err)

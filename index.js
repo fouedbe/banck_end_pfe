@@ -20,23 +20,23 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(logger)
-
+app.use(cors());
 //helmet
 app.use(helmet());
 //cors
-app.use(cors());
+
 
 app.use(passport.initialize())
 
 
    //Routes
-app.use("/api/demande", require("./routers/demande"));
-app.use("/api/compte", require("./routers/compte"));
+app.use("/api/demande",passport.authenticate("jwt", { session: false }), require("./routers/demande"));
+app.use("/api/compte",passport.authenticate("jwt", { session: false }), require("./routers/compte"));
 app.use("/api/auth", require("./routers/auth"));
-app.use("/api/users",require("./routers/users"));
+app.use("/api/users",passport.authenticate("jwt", { session: false }),require("./routers/users"));
 app.use("/api/getImage",require("./routers/image"));
-app.use('/api/transaction',require("./routers/transaction"));
-
+app.use('/api/transaction',passport.authenticate("jwt", { session: false }),require("./routers/transaction"));
+app.use("/api/pret",passport.authenticate("jwt", { session: false }), require("./routers/pret"));
 
 //Error Handler Middleware
 app.use(notFound)

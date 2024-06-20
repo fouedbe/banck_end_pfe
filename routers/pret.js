@@ -1,28 +1,32 @@
 const express = require('express');
 const router = require('express').Router();
 const asyncHandler = require("express-async-handler");
-const { Demande, validateUpdateDemande } = require("../models/demande");
+const { Pret } = require("../models/pret");
 const { verifyToken,verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("../middlewares/verifyToken");
-const{AddDemande,updateDemande,getDemandeById,gettAllDemande,deleteDemande}= require("../controllers/demandeController");
+const{Addpret,updatepret,getpretById,gettAllpret,deletepret}= require("../controllers/pretController");
 const multer =require("multer");
 
 const path= require("path");
 const passport = require("passport");
 
-
+/**
+ * @desc Ajoute Enonce
+ * @route api/todos/ajouter
+ * @method post
+ */
 
 
 
 //image storage
 
-        router.post('/add',AddDemande);
+        router.post('/add',Addpret);
     /**
      * @desc update Enonce 
      * @route /api/users/:id
      * @method PUT 
      * @access private
      */
-router.put("/update/:id",updateDemande );
+router.put("/update/:id",updatepret );
 
  /**
      * @desc Get All  Enonce 
@@ -30,7 +34,7 @@ router.put("/update/:id",updateDemande );
      * @method GET
      * @access private(only admin)
      */
-router.get("/all",gettAllDemande );
+router.get("/all",gettAllpret );
  
  /**
      * @desc Get  Enonce By Id
@@ -38,7 +42,7 @@ router.get("/all",gettAllDemande );
      * @method GET
      * @access private(only admin & user himself)
      */
- router.get("/:id",getDemandeById)
+ router.get("/:id",getpretById)
 
  /**
      * @desc Delete Enonce 
@@ -46,7 +50,7 @@ router.get("/all",gettAllDemande );
      * @method DELETE
      * @access private(only admin )
      */
- router.delete("/:id", deleteDemande)
+ router.delete("/:id", deletepret)
  router.get("/export");
  
 module.exports = router;

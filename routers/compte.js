@@ -66,7 +66,7 @@ router.put("/retrait/:id",retraitCompte );
      * @method DELETE
      * @access private(only admin )
      */
- router.delete("/:id", deleteCompte)
+ router.delete("/:id",inRole(ROLES.ADMIN), deleteCompte)
  router.get("/export");
  
 module.exports = router;

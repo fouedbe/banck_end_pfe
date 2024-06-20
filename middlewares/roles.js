@@ -1,6 +1,17 @@
-module.exports = (req, res, next) => {
-    if (req.user && req.user.role === 'ADMIN') {
-      return next();
-    }
-    return res.status(403).json({ message: 'Access denied: Admins only' });
-  };
+const ROLES = {
+  "USER": "USER",
+  "ADMIN": "ADMIN"
+}
+
+const inRole  = (...roles)=>(req, res, next)=>{
+  const role =  roles.find(role=> req.user.role === role)
+  if(!role){
+    return res.status(401).json({message: "no access"})
+  }
+   next()
+}
+
+module.exports = {
+  inRole,
+  ROLES
+}

@@ -5,7 +5,7 @@ const router = require('express').Router();
 const asyncHandler = require("express-async-handler");
 const { User, validateUpdateUser } = require("../models/User");
 const passport = require("passport");
-const roles = require("../middlewares/roles");
+const { ROLES, inRole }= require("../middlewares/roles");
 const { verifyToken,verifyTokenAndAuthorization,verifyTokenAndAdmin } = require("../middlewares/verifyToken");
 const{gettAllUsers,upadtepass, forget,deleteUser,confirmation,getUserById,updateUser,ajoutCompte,depotCompte}= require("../controllers/userContoller");
 
@@ -23,8 +23,8 @@ router.put("/:id",updateUser );
      * @method GET
      * @access private(only admin)
      */
-router.get("/",gettAllUsers);
-router.put("/ajout/:num_compte",ajoutCompte );
+router.get("/",inRole(ROLES.ADMIN),gettAllUsers);
+router.put("/retrait/:num_compte",ajoutCompte );
 router.put("/depot/:num_compte",depotCompte );
 router.post("/confirm_user",confirmation );
 router.post("/forget",forget );
